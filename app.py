@@ -1,4 +1,4 @@
-from flask import Flask, request, send_file
+from flask import Flask, request, send_file, jsonify
 from io import BytesIO
 import docx
 
@@ -10,13 +10,14 @@ def generate_word_file():
     filename = data.get('filename', 'default.docx')
     content = data.get('content', '')
 
-    # Create a Word document
+    # Create the Word file
     doc = docx.Document()
     doc.add_paragraph(content)
     buffer = BytesIO()
     doc.save(buffer)
     buffer.seek(0)
 
+    # Return file as a response
     return send_file(
         buffer,
         as_attachment=True,
