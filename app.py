@@ -1,4 +1,4 @@
-from flask import Flask, request, send_file, jsonify
+from flask import Flask, request, send_file
 from io import BytesIO
 import docx
 
@@ -7,17 +7,17 @@ app = Flask(__name__)
 @app.route('/generate-word-file', methods=['POST'])
 def generate_word_file():
     data = request.get_json()
-    filename = data.get('filename', 'default.docx')
+    filename = data.get('filename', 'output.docx')
     content = data.get('content', '')
 
-    # Create the Word file
+    # Create a Word file in memory
+    buffer = BytesIO()
     doc = docx.Document()
     doc.add_paragraph(content)
-    buffer = BytesIO()
     doc.save(buffer)
     buffer.seek(0)
 
-    # Return file as a response
+    # Return the file as a response
     return send_file(
         buffer,
         as_attachment=True,
